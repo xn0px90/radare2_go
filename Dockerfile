@@ -30,7 +30,29 @@ RUN cd /opt/code/${VALA_TAR}; ./configure --prefix=/usr ; make && make install
 # compile radare and bindings
 RUN cd /opt/code; git clone https://github.com/radare/radare2.git; cd radare2; ./sys/all.sh
 
+#install Go
+
+ENV GOLANG_VERSION 1.6.2
+ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_SHA256 e40c36ae71756198478624ed1bb4ce17597b3c19d243f3f0899bb5740d56212a
+
+RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+	&& echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
+	&& tar -C /usr/local -xzf golang.tar.gz \
+	&& rm golang.tar.gz
+
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+WORKDIR $GOPATH
+
+COPY go-wrapper /usr/local/bin/
+#debugging Go apps with dlv DWARF spec th eright way
+RUN go get github.com/derekparker/delve/cmd/dlv 
+
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
 RUN r2 -V
