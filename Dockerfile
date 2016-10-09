@@ -31,7 +31,7 @@ RUN cd /opt/code/${VALA_TAR}; ./configure --prefix=/usr ; make && make install
 RUN cd /opt/code
 RUN git clone https://github.com/radare/radare2.git
 RUN cd radare2
-RUN sh /opt/code/radare2/sys/install.sh
+RUN ./opt/code/radare2/sys/all.sh
 
 #install Go
 
