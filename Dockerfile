@@ -58,4 +58,4 @@ RUN go get github.com/derekparker/delve/cmd/dlv
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
-RUN r2 -V
+#RUN r2 -V
